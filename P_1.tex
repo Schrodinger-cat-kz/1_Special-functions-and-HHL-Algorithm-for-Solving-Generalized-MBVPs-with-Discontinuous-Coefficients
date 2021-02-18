@@ -1,0 +1,403 @@
+ \documentclass[review]{elsarticle}
+
+\usepackage[ruled,vlined]{algorithm2e}
+
+\usepackage{rotating}
+\usepackage{lineno,hyperref}
+\modulolinenumbers[5]
+
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsopn}
+\usepackage{natbib}
+
+\usepackage{hyperref}
+\usepackage{amsmath}
+
+\usepackage{geometry} 
+\usepackage{fleqn}
+\usepackage{graphicx} 
+
+
+\usepackage{algorithmic}
+
+\ifpdf
+  \DeclareGraphicsExtensions{.eps,.pdf,.png,.jpg}
+\else
+  \DeclareGraphicsExtensions{.eps}
+\fi
+\usepackage{mathtools}
+
+\usepackage{tikz}
+\usetikzlibrary{quantikz}
+
+\DeclareMathOperator{\diag}{diag}
+
+% Add a serial/Oxford comma by default.
+\journal{Journal of \LaTeX\ Templates}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%% Elsevier bibliography styles
+%%%%%%%%%%%%%%%%%%%%%%%
+%% To change the style, put a % in front of the second line of the current style and
+%% remove the % from the second line of the style you would like to use.
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Numbered
+%\bibliographystyle{model1-num-names}
+
+%% Numbered without titles
+%\bibliographystyle{model1a-num-names}
+
+%% Harvard
+%\bibliographystyle{model2-names.bst}\biboptions{authoryear}
+
+%% Vancouver numbered
+%\usepackage{numcompress}\bibliographystyle{model3-num-names}
+
+%% Vancouver name/year
+%\usepackage{numcompress}\bibliographystyle{model4-names}\biboptions{authoryear}
+
+%% APA style
+%\bibliographystyle{model5-names}\biboptions{authoryear}
+
+%% AMA style
+%\usepackage{numcompress}\bibliographystyle{model6-num-names}
+
+%% `Elsevier LaTeX' style
+\bibliographystyle{elsarticle-num}
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Special functions and HHL Algorithm for Solving Moving Boundary Value Problems with Discontinuous Coefficients and applications in Electric Contacts\tnoteref{mytitlenote}}
+
+%\tnotetext[mytitlenote]{Fully documented templates are available in the elsarticle package on \href{http://www.ctan.org/tex-archive/macros/latex/contrib/elsarticle}{CTAN}.}
+
+%% Group authors per affiliation:
+%\author{Merey M.Sarsengeldin\fnref{myfootnote}, Zuhair M. Nashed %\fnref{myfootnote}}
+%\address{Department of Mathematics, University of Central Florida, Orlando, FL}
+%\fntext[myfootnote]{Since 1880.}
+
+%% or include affiliations in footnotes:
+\author[mymainaddress,mythirdaddress]{Merey M. Sarsengeldin\corref{mycorrespondingauthor}}
+\cortext[mycorrespondingauthor]{Corresponding author}
+\ead{merey.sarsengeldin@ucf.edu, dr.sarsengeldin@gmail.com}
+
+%\ead[url]{www.elsevier.com}
+
+
+\address[mymainaddress]{Department of Mathematics, University of Central Florida, Orlando, FL, US}
+\address[mythirdaddress]{Satbayev University, Almaty, Kazakhstan}
+\begin{abstract}
+In this study we utilize special functions and Harrow-Hassidim-Lloyd (HHL) quantum algorithm for finding exact and approximate solutions of Generalized Heat Equation with known moving boundaries and as an example we consider model problem in spherical coordinates used for modeling electric contact erosion with Kohler's Effect. For approximate solutions of systems of MBVPs with discontinuous coefficients the collocation method was used along with the Maximum Principle for finding error estimates.
+\end{abstract}
+
+\begin{keyword}
+Free Boundary Value Problems, Quantum Computing, HHL algorithm, Electric Contact Phenomena
+\end{keyword}
+
+\end{frontmatter}
+
+\linenumbers
+
+\section{Introduction}
+Moving Boundary Value Problems (MBVP) play impoprtant role in modeling diverse phase transitioning  phenomena. Particularly different electric contact phenomena can be described using MBVPS. 
+
+Quantum computing and quantum algorithms....
+
+Electrical contacts, their design and reliability play crucial role in designing modern electrical apparatuses. A lot of electric contact phenomena accompanied with heat and mass transfer like arcing and bridging are very rapid (nanosecond range)\cite{holm2013electric, slade2017electrical} that their experimental study is very difficult or sometimes impossible and the need of their mathematical modeling is due not only to the need to optimize the planning experiment, but also sometimes due to the impossibility to use a different approach. Free (FBVPs) and Moving Boundary Value Problems (MBVPs) take in account phase transformations  \cite{friedman1970,rubinstein2000stefan}, agree with experimental data and can serve as models for aforementioned processes \cite{khar15holm,khar16ICEC,kharin2012}.\\
+From theoretical point of view, these problems are among the most challenging problems in the theory of non-linear parabolic equations, which along with the desired solution an unknown moving boundary has to be found. In some specific cases it is possible to construct Heat Potentials for which, boundary value problems can be reduced to integral equations \cite{friedman1970,rubinstein2000stefan,tikhonov2013equations}. However, in the case of domains that degenerate at the initial time, there are additional difficulties due to the singularity of integral equations, which belong to the class of pseudo - Volterra equations which can be solved in special cases and hard to solve in general case. A reader can refer to the long list of studies in \cite{Tarzia2000ABO} and literature therein dedicated to the MBVPs. Despite the great value and exhaustiveness of all these results, investigation and elaboration of both exact and approximate methods for solving MBVPs responsible for adequate modeling electric contact phenomena  is still an actual mathematical problem.\\
+In this paper we consider a class of PDEs with moving boundaries
+\begin{align}
+&\frac{\partial {\theta}}{\partial {t}} = a^2\left(\frac{\partial {\theta^2}}{\partial {x^2}} + \frac{\nu}{x}\frac{\partial{\theta}}{\partial{x}} \right),\hspace{1em} \alpha(t)<x<\beta(t),\hspace{1em}  -\infty<\nu<\infty,\hspace{1em} t>0, \label{geneq}\
+\end{align}
+which can be solved by the series of linear combinations of special functions which apriori satisfy equation \ref{geneq}
+\begin{align}
+&S_{\gamma,\nu}^{1}\left(x,t\right) = \left(2a\sqrt{t}\right)^{\gamma}\Phi\left(-\frac{\gamma}{2},\frac{\nu+1}{2};-\frac{x^{2}}{4a^{2}t}\right),\hspace{1em} -\infty<\gamma,\nu<\infty,\hspace{1em} \label{hyper1}\\[1mm]
+&S_{\gamma,\nu}^{2}\left(x,t\right) = \left(2a\sqrt{t}\right)^{\gamma}\left(\frac{x^{2}}{4a^{2}t}\right)^{\frac{1-\nu}{2}}\Phi\left(\frac{1-\nu-\gamma}{2},\frac{3-\nu}{2};-\frac{x^{2}}{4a^{2}t}\right).\label{hyper2}\hspace{1em}\
+\end{align}
+Generalized Heat Equation and its solutions were studied in \cite{appell,widder75,haimo68,widapptransf63,brag65}, and was successfully applied in \cite{khar15holm,khar16ICEC,kharin2012, kharnovosib17} for modeling and solving Heat and Mass transfer problems in diverse electric contact phenomena. Our goal in this series of studies is to develop new computational methods for solving MBVPs where we will be employing and developing quantum algorithms as well.\\
+Pioneering studies \cite{ben80,fe82} in 1980s gave a birth to a new paradigm in computation which we call nowadays quantum computing, whereby information is encoded in a quantum system. Further on, in 1990s a series of studies \cite{sho97,gro96,gro97} dedicated to quantum algorithms provided exponential speed-up in run time over the best known classical algorithms for same tasks. In last decades, consistent advances in theory and experiments generated a plethora of powerful quantum algorithms \cite{mo16} 
+which surpass their classical counterparts in terms of computational power, however worth noting that their applications are restricted to few use cases due to the challenges related to their physical realization. Careful physical realization may lead to profound results in reaching exponential speed-up.\\
+In this particular study, we will be using one of such powerful quantum algorithms developed by Harrow-Hassidim-Lloyd (HHL) \cite{hhl09} to solve MBVPs. The HHL algorithm, its modifications and improvements \cite{hhl09, wosnig18physrevlet,duan20physleta,abhijith18arxiv,chakraborty2018power,Dervovic2018QuantumLS} (both for sparse and dense matrices) is the operator inversion or linear systems solving quantum algorithm, has wide range of applications \cite{duan20physleta} as well as attempts to dequantize them \cite{tang18} %which mainly consists of three steps (phase estimation, controlled rotation and uncomputation)
+and provides exponential speed-up over the classical algorithms. For detailed survey on improvements and limitations, complexity, QRAM and physical implementation  of the algorithm we refer reader to \cite{duan20physleta, Dervovic2018QuantumLS} and literature therein.\\
+We consider a linear operator equation
+\begin{align}
+Mx = b,
+\label{mateq}
+\end{align}
+where in this study we assume that $M$ is Hermitian and s-sparse matrix, and b is a vector column. This condition can be relaxed and it can be shown that $\tilde{M} = \begin{bmatrix}
+0 & M\\
+M^{T} & 0
+\end{bmatrix}$ can be brought to Hermitian matrix.
+Since $\tilde{M}$ is Hermitian, we can solve the equation 
+$\tilde{M}\vec{y} = \begin{bmatrix}
+\vec{b}\\
+0
+\end{bmatrix}$
+to obtain $y = \begin{bmatrix}
+0\\
+\vec{x}
+\end{bmatrix}$.
+Therefore the rest of the article we assume that $M$ is Hermitian.\\
+The idea of the method is to reduce given MBVP to the equation \ref{mateq} and apply HHL algorithm.
+In this study we will consider an "ideal" case where the data is encoded "efficiently" and refer reader to \cite{Dervovic2018QuantumLS} and literature therein for different methods of Hamiltonian simulation and quantum phase estimation.
+\section{Main results}
+\label{sec:main}
+Let's consider the general case - the system of generalized Heat Equations with  arbitrary $\nu$, with third type boundary conditions and with known moving boundaries which can serve as a model for bridging processes in electrical contacts with variable cross section.
+
+following formulas will ease our further calculations 
+
+
+\begin{align}
+&\underset{x\to 0}{\lim}\frac{1}{z^{\beta}}\Phi\left(-\frac{\beta}{2},\mu;-z^{2}\right) = \frac{\Gamma(\mu)}{\Gamma(\mu+\frac{\beta}{2})},
+\label{lhopital}\\
+&\frac{\partial\theta}{\partial x}=\sum_{n=0}^\infty\left(4a_1^2t\right)^n\Bigg[ \Bigg.A_n\left(\frac{-x}{4a_1^2t}\right) L_{n-1}^{\mu}\left(\frac{-x^2}{4a_{1}^2t}\right)+ B_n\left(\frac{x^2}{4a_1^2t}\right)^{-\mu}\left(\frac{2x}{4a_1^2t}\right)\Bigg( \Bigg.(1-\mu)\nonumber\\
+&\Phi\left(1-\mu-n, 2-\mu,\frac{-x^2}{4a_{1}^2t}\right)-\left(\frac{-x^2}{4a_{1}^2t}\right)^{-\mu}\left(\frac{x^2}{4a_1^2t}\right)\Phi\left(2-\mu-n, 3-\mu,\frac{-x^2}{4a_{1}^2t}\right)\Bigg) \Bigg.\Bigg] \Bigg.,
+\label{der_wrt_x}\\
+&\left.\frac{\partial\theta}{\partial x}\right|_{x=\sqrt{t}}=\sum_{n=0}^\infty\left(4a_1^2\right)^n\left(2a_1\sqrt{t}\right)^{2n-1}\left(\frac{-\alpha}{a_1}\right)\Bigg[ \Bigg.A_n\left(L_{n-1}^{\mu}\left(\frac{-\alpha}{2a_1}\right)\right)+ B_n\Bigg( \Bigg.(\mu-1)\nonumber\\
+&\left(\frac{\alpha^2}{4a_1^2}\right)^{-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-
+\alpha^2}{4a_{1}^2}\right)+(\mu-1)\left(\frac{\alpha^2}{4a_1^2}\right)^{-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-\alpha^2}{4a_{1}^2}\right)\Bigg) \Bigg.\Bigg] \Bigg..
+\label{der_of_theta}
+\end{align}
+\subsection{HHL algorithm for exact solution of one phase MBVPs}
+\label{sec:onephase}
+\begin{align}
+&\frac{\partial {\theta}}{\partial {t}} = a^2\left(\frac{\partial {\theta^2}}{\partial {x^2}} + \frac{\nu}{x}\frac{\partial{\theta}}{\partial{x}} \right),\hspace{1em}  &0<x<\alpha\sqrt{t},\hspace{1em} 0<\nu, t<1, \label{gen_rob}\\[1mm]
+&\theta(0,0) = T_{m},&\hspace{1mm},\label{eq1_incond1}\\[3mm]
+&\left. \left(\beta \theta+\gamma \frac{\partial \theta}{\partial x} \right)\right|_{x=0 }= P(t),\label{eq1_flux}\\[3mm]
+&\left. \delta \theta \right|_{x=\alpha \sqrt{t} } = T_{m},  \label{eq1_temp}
+\end{align}
+from \ref{hyper1} and \ref{hyper2} one can obtain solutions for equations \ref{lin},\ref{cyl} and \ref{sphr} in the form of following series of linear combinations of special functions
+\begin{align}
+&\theta(x,t)= \sum_{n=0}^{\infty}\left(4a^2t\right)^{n}\left[A_nL_{n}^{\mu-1}\left( \frac{-x^2}{4a^2t} \right)+ B_n\left( \frac{x^2}{4a^2t} \right)^{1-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-x^2}{4a^2t}\right)\right] \label{soleq1}
+\end{align}
+Where $\mu = \frac{1+\nu}{2}$, $\beta=2n$.
+From conditions \ref{eq1_flux}, \ref{eq1_temp} and using formula \ref{der_of_theta} we get following expressions:
+\begin{align}
+&\beta\sum_{n=0}^\infty\left(4a_1^2t\right)^nA_nL_n^{\mu-1}(0)=\sum_{n=0}^\infty P^n(0)\frac{t^n}{n!},
+\label{eq1_sys1}\\
+&\delta\sum_{n=0}^{\infty}\left(4a_{1}^2t\right)^{n}\left[A_nL_{n}^{\mu-1}\left( \frac{-\alpha^2}{4a_{1}^2} \right)+ B_n\left( \frac{\alpha^2}{4a_{1}^2} \right)^{1-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-\alpha^2}{4a_{1}^2}\right)\right]=T_m,\nonumber\\
+\label{eq1_sys2}
+\end{align}
+
+After comparing coefficients at same powers of $t^n$, equations \ref{eq1_sys1}, \ref{eq1_sys2} can be represented in the form of system of linear algebraic equations or in the form of matrix equation \ref{mateq} or following matrix
+where
+\begin{align}
+&M=\begin{pmatrix}m_{11}&m_{12}&0&\dots&0&0&0\\m_{21}&m_{22}&0&\dots&0&0&0\\0&0&0&\dots&0&0&0\\\vdots&&&\ddots&&&\vdots\\0&0&0&\dots&0&0&0\\0&0&0&\dots&0&m_{2k+12k+1}&m_{2k+12k+2}\\0&0&0&\dots&0&m_{2k+22k+1}&m_{2k+2 2k+2}\end{pmatrix},\label{mentries}
+\\&x=\begin{pmatrix}A_0\\B_0\\A_1\\B_1\\\vdots\\A_k\\B_k\end{pmatrix}, 
+b=\begin{pmatrix} P_0\\
+T_m\\
+P_1\\
+T_m\\\vdots\\P_k\\
+T_m\end{pmatrix}\nonumber,
+\end{align}
+where
+\begin{align*}
+&m_{2k+12k+1}=\beta\left(4a_1^2\right)^n L_n^{\mu -1}\left(0\right),\\ 
+&m_{2k+12k+2}=0,\\
+&m_{2k+22k+1}=\delta\left(4a_1^2\right)^n L_n^{\mu -1}\left(\frac{-\alpha^2}{4a_1^2}\right)\\
+&m_{2k+22k+2}= \delta\left(4a_1^2\right)^n\left( \frac{\alpha^2}{4a_1^2} \right)^{1-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-\alpha^2}{4a_1^2}\right)
+\end{align*}
+and expressions $i^{n}erfc\left( \frac{\pm \alpha}{2a_{j}} \right)$, $i^{n}erfc\left( 0 \right)$ for $j=1,2$, $n=-1,0,...,k$ are numbers which can be determined from tables or by calculators. Next, we use algorithm \ref{alg:genhhl} for solving equation \ref{mateq} with entries given in formula \ref{mentries} and refer reader to \cite{SarFirst} for more details on numerical experiment in Qiskit.
+\begin{figure}[htbp]
+
+\begin{quantikz}[row sep={1cm,between origins}, slice
+titles=slice \col,slice style=blue,slice label style
+={inner sep=1pt,anchor=south west,rotate=40}]
+\lstick{$\ket{0}$}& \qw & \qw & \qw\slice{step 1} & \qw\slice{step 2}\gategroup[4,steps=3,style={dashed,
+rounded corners,fill=blue!20, inner xsep=2pt},
+background, label style={label position=below,anchor=
+north,yshift=-0.2cm}]{{repeat until success}} & \gate[3]{\begin{turn}{90} 
+Eigenvalue inversion
+\end{turn}}\slice{step 3} & \qw\slice{step 4} & \meter{}\slice{step 5} & \qw & \qw & \qw \\
+\lstick{$\ket{0}$}& \qwbundle
+{} & \qw & \qw & \gate[3]{\begin{turn}{90} 
+$QPE$
+\end{turn}} & \qw &  \gate[3]{\begin{turn}{90} 
+$QPE\dagger$
+\end{turn}}& \qw & \qw & \qw & \qw \\
+\lstick{$\ket{0}$}& \qwbundle
+{} & \gate[2]{\begin{turn}{90} 
+Load \ket{b}
+\end{turn}} & \qw & \qw & \qw & \qw & \qw & \gate[2]{\begin{turn}{90} 
+$F(x)$
+\end{turn}} & \qw & \qw \\
+\lstick{$\ket{0}$}& \qwbundle
+{} & \qw & \qw & \qw & \qw & \qw & \qw & \qw &  \meter{}\slice{step 6} & \qw 
+\end{quantikz}
+\caption{Quantum HHL algorithm.}
+\label{fig}
+\end{figure}
+\subsection{HHL algorithm for exact solution of two phase MBVPs with discontinuous coefficients}
+\label{sec:twophase}
+Let's consider following system of generalized Heat Equations with known moving boundary and discontinuous coefficients
+\begin{align}
+&\frac{\partial {\theta_{1}}}{\partial {t}} = a_{1}^2\left(\frac{\partial {\theta_{1}^2}}{\partial {x^2}} + \frac{\nu}{x}\frac{\partial{\theta_{1}}}{\partial{x}} \right),\hspace{1em}  &0<x<\alpha \sqrt{t},\hspace{1em} 0<\nu, t<1, \label{sys1_eq_1}\\[1mm]
+&\frac{\partial {\theta_{2}}}{\partial {t}} = a_{2}^2\left(\frac{\partial {\theta_{2}^2}}{\partial {x^2}} + \frac{\nu}{x}\frac{\partial{\theta_{2}}}{\partial{x}} \right),\hspace{1em}  &\alpha \sqrt{t}<x<\infty,\hspace{1em} \label{sys1_eq_2}\\[1mm]
+&\theta_{1}(0,0) = T_{m},\label{sys1_incond1}\\[3mm]
+&\theta_{2}(x,0) = f(x),\label{sys1_incond2}\\[3mm]
+&f(0)=T_{m},\hspace{1mm}\alpha(0)=0,&\hspace{1mm}\underset{x\to \infty}{\lim}f(x)\approx f(X)=0,\hspace{1mm} \hspace{1mm},\label{sys1_concord}\\[3mm]
+&\left. \left(\beta \theta_1+\gamma \frac{\partial \theta_1}{\partial x} \right)\right|_{x=0 } = P(t),\label{sys1_flux}\\[3mm]
+&\left. \delta \theta_1\right|_{x=\alpha \sqrt{t} } = \left. \kappa \theta_2\right|_{x=\alpha \sqrt{t} }=T_{m}  \label{sys1_temp}
+\end{align}
+The solution of problem \ref{sys1_eq_1}-\ref{sys1_temp} can be represented in the following form
+\begin{align}
+&\theta_{1}(x,t)= \sum_{n=0}^{\infty}\left(4a_{1}^2t\right)^{n}\left[A_nL_{n}^{\mu-1}\left( \frac{-x^2}{4a_{1}^2t} \right)+ B_n\left( \frac{x^2}{4a_{1}^2t} \right)^{1-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-x^2}{4a_{1}^2t}\right)\right] \label{sol1sys1}\\[1mm]
+&\theta_{2}(x,t)= \sum_{n=0}^{\infty}\left(4a_{2}^2t\right)^{n}\left[C_nL_{n}^{\mu-1}\left( \frac{-x^2}{4a_{2}^2t} \right)+ D_n\left( \frac{x^2}{4a_{2}^2t} \right)^{1-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-x^2}{4a_{2}^2t}\right)\right] \label{sol2sys1}
+\end{align}
+
+From \ref{sys1_flux},\ref{sys1_temp},\ref{sys1_incond2},\ref{lhopital},\ref{der_of_theta}, we get 
+\begin{align}
+&\beta\sum_{n=0}^\infty\left(4a_1^2t\right)^nA_nL_n^{\mu-1}(0)=\sum_{n=0}^\infty P^n(0)\frac{t^n}{n!},
+\label{C_D_n1}\\
+&\delta\sum_{n=0}^{\infty}\left(4a_{1}^2t\right)^{n}\left[A_nL_{n}^{\mu-1}\left( \frac{-\alpha^2}{4a_{1}^2} \right)+ B_n\left( \frac{\alpha^2}{4a_{1}^2} \right)^{1-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-\alpha^2}{4a_{1}^2}\right)\right]=T_m,
+\label{C_D_n2}\\
+&\frac{(-1)^n}{n!}C_n + D_n=\frac{f^{2n}(0)}{(2n)!},
+\label{C_D_n}\\
+&\kappa\sum_{n=0}^{\infty}\left(4a_{2}^2t\right)^{n}\left[C_nL_{n}^{\mu-1}\left( \frac{-\alpha^2}{4a_{2}^2} \right)+ D_n\left( \frac{\alpha^2}{4a_{2}^2} \right)^{1-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-\alpha^2}{4a_{2}^2}\right)\right]=T_m.
+\label{C_D_n3}
+\end{align}
+Let $P(t)=\sum_{n=0}^{k}P_{n}t^n$, where $P_n=\frac{P^{n}(0)}{n!}$ and have to be determined from boundary and initial conditions. The idea of the collocation method applied in this problem is to subdivide $0<t<T_a$ into $k$ intervals and after substituting solution functions \ref{mod2_sol1}, \ref{mod2_sol2} into the boundary conditions \ref{mod2_flux},\ref{mod2_temp},\ref{mod2_stef} at points $t_1, t_2,...,t_k$ solve the system of linear algebraic equation or matrix equation \ref{mateq} for coefficients $A_n, B_n, C_n, P_n$ using HHL algorithm, where $M, x, b$ in equation \ref{mateq} are as following:
+\begin{align}
+&M=\begin{pmatrix}
+m_{11}&m_{12}&0&0&\dots&0&0&0&0&0\\
+m_{21}&m_{22}&0&0&\dots&0&0&0&0&0\\
+0&0&m_{33}&m_{34}&\dots&0&0&0&0&0\\
+0&0&m_{43}&m_{44}&\dots&0&0&0&0&0\\
+\vdots&&&&\ddots&&&&&\vdots\\
+0&0&0&0&\dots&0&m_{4k-3,4k-3}&m_{4k-3,4k-2}&0&0\\
+0&0&0&0&\dots&0&m_{4k-2,4k-3}&m_{4k-2,4k-2}&0&0\\
+0&0&0&0&\dots&0&0&0&m_{4k-1,4k-1}&m_{4k-1,4k}\\
+0&0&0&0&\dots&0&0&0&m_{4k,4k-1}&m_{4k,4k}
+\end{pmatrix},\label{twophase_m_entries}
+\\&x=\begin{pmatrix}A_0\\B_0\\C_0\\D_0\\\vdots\\A_k\\B_k\\C_k\\D_k\end{pmatrix}, 
+b=\begin{pmatrix} P_0\\
+T_m\\
+\frac{f^{(0)}(0)}{\left(0\right)!}\\
+T_m\\\vdots\\P_k\\
+T_m\\
+\frac{f^{(2n)}(0)}{\left(2n\right)!}\\
+T_m\end{pmatrix}\nonumber,
+\end{align}
+where
+\begin{align*}
+&m_{4k-3,4k-3}=\beta\left(4a_1^2\right)^n L_n^{\mu -1}\left(0\right),\\ 
+&m_{4k-3,4k-2}=0,\\
+&m_{4k-2,4k-3}=\delta\left(4a_1^2\right)^n L_n^{\mu -1}\left(\frac{-\alpha^2}{4a_1^2}\right)\\
+&m_{4k-2,4k-2}= \delta\left(4a_1^2\right)^n\left( \frac{\alpha^2}{4a_1^2} \right)^{1-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-\alpha^2}{4a_1^2}\right)\\
+&m_{4k-1,4k-1}=\frac{(-1)^n}{(n)!},\\
+&m_{4k-1,4k}=\frac{(-1)^n}{(n)!},\\
+&m_{4k,4k-1}=\kappa\left(4a_2^2\right)^n L_n^{\mu -1}\left(\frac{-\alpha^2}{4a_2^2}\right)\\
+&m_{4k,4k}= \kappa\left(4a_2^2\right)^n\left( \frac{\alpha^2}{4a_2^2} \right)^{1-\mu}\Phi\left(1-\mu-n, 2-\mu,\frac{-\alpha^2}{4a_2^2}\right)
+\end{align*}
+Next, we use Quantum HHL algorithm \ref{alg:genhhl} for solving problem \ref{mateq} with entries given in \ref{stefmentries}. Numerical implementation is demonstrated in \cite{SarFirst}.
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwData{Load the data $\ket{b}\in\mathbb{C} ^{N}$}
+\KwResult{Apply an observable  M  to calculate $F(x)=\bra{x}M\ket{x}.$}
+initialization\;
+\While{outcome is not $1$ }{
+\begin{itemize} 
+  \item Apply Quantum Phase Estimation (QPE) with\\ $U=e^{iMt}:=\sum_{j=0}^{N-1}e^{i\lambda_{j}t}\ket{u_j}\bra{u_j}$. Which implies $\sum_{j=0}^{N-1}b_{j}\ket{\lambda_j}_{n_{l}}\bra{u_j}_{n_{b}}$, \\ in the eigenbasis of  $M$\\
+where $\ket{\lambda_j}_{n_{l}}$ is the  $n_{l}$ -bit binary representation of $\lambda_{j}$ .
+  \item Add an ancilla qubit and apply a rotation conditioned on  $\ket{\lambda_j},$\\
+  $\sum_{j=0}^{N-1}b_{j}\ket{\lambda_j}_{n_{l}}\bra{u_j}_{n_{b}}\left(\sqrt{1-\frac{C^2}{\lambda_j^2}}\ket{0}+\frac{C}{\lambda_j}\ket{1}\right)$, $C$ - normalization constant.
+  \item Apply $QPE^{\dag}.$ This results in\\
+  $\sum_{j=0}^{N-1}b_{j}\ket{0}_{n_{l}}\bra{u_j}_{n_{b}}\left(\sqrt{1-\frac{C^2}{\lambda_j^2}}\ket{0}+\frac{C}{\lambda_j}\ket{1}\right);$
+\end{itemize}
+\eIf{If the outcome is  $1$ , the register is in the post-measurement state\\
+    $\left(\sqrt{\frac{1}{\sum_{j=1}^{N-1}\left|b_j\right|^2/\left|\lambda_j\right|^2/}}\right)\sum_{j=0}^{N-1}\frac{b_{j}}{\lambda_{j}}\ket{0}_{n_{l}}\bra{u_j}_{n_{b}}$ }{Apply an observable  M  to calculate $F(x)=\bra{x}M\ket{x}$;
+}{
+repeat the loop\;
+}
+}
+\caption{Quantum HHL Algorithm in Qiskit}
+\label{alg:genhhl}
+\end{algorithm}
+
+
+%\begin{itemize}
+%  \item Load the data $\ket{b}\in\mathbb{C} ^{N}$
+%  \item Apply Quantum Phase Estimation (QPE) with\\ $U=e^{iMt}:=\sum_{j=0}^{N-1}e^{i\lambda_{j}t}\ket{u_j}\bra{u_j}$. The quantum state of the register expressed in the eigenbasis of  $M$  is now 
+%$\sum_{j=0}^{N-1}b_{j}\ket{\lambda_j}_{n_{l}}\bra{u_j}_{n_{b}}$,\\
+%where $\ket{\lambda_j}_{n_{l}}$ is the  $n_{l}$ -bit binary representation of $\lambda_{j}$ .
+%  \item Add an ancilla qubit and apply a rotation conditioned on  $\ket{\lambda_j},$\\
+%  $\sum_{j=0}^{N-1}b_{j}\ket{\lambda_j}_{n_{l}}\bra{u_j}_{n_{b}}\left(\sqrt{1-\frac{C^2}{\lambda_j^2}}\ket{0}+\frac{C}{\lambda_j}\ket{1}\right)$, where $C$ is normalization constant.
+%  \item Apply $QPE^{\dag}.$ Ignoring possible errors from QPE, this results in\\
+%  $\sum_{j=0}^{N-1}b_{j}\ket{0}_{n_{l}}\bra{u_j}_{n_{b}}\left(\sqrt{1-\frac{C^2}{\lambda_j^2}}\ket{0}+\frac{C}{\lambda_j}\ket{1}\right).$
+%  \item Measure the ancilla qubit in the computational basis. If the outcome is  $1$ , the register is in the post-measurement state\\
+%    $\left(\sqrt{\frac{1}{\sum_{j=1}^{N-1}\left|b_j\right|^2/\left|\lambda_j\right|^2/}}\right)\sum_{j=0}^{N-1}\frac{b_{j}}{\lambda_{j}}\ket{0}_{n_{l}}\bra{u_j}_{n_{b}},$ which up to normalization corresponds to the solution.
+%  \item Apply an observable  M  to calculate $F(x)=\bra{x}M\ket{x}.$
+%\end{itemize}
+
+
+For computational purposes we use Qiskit and IBM Q. Let's consider exact and approximate solutions of two model problems where we demonstrate the use of HHL quantum algorithm. The error of the approximate solution can be estimated by the Maximum Principle.\\
+%\begin{figure}[htbp]
+
+%\begin{quantikz}[row sep={1cm,between origins}, slice
+%titles=slice \col,slice style=blue,slice label style
+%={inner sep=1pt,anchor=south west,rotate=40}]
+%\lstick{$\ket{0}$}& \qw & \qw & \qw\slice{step 1} & \qw\slice{step 2}\gategroup[4,steps=3,style={dashed,
+%rounded corners,fill=blue!20, inner xsep=2pt},
+%background, label style={label position=below,anchor=
+%north,yshift=-0.2cm}]{{repeat until success}} & \gate[3]{\begin{turn}{90} 
+%Eigenvalue inversion
+%\end{turn}}\slice{step 3} & \qw\slice{step 4} & \meter{}\slice{step 5} & \qw & \qw & \qw \\
+%\lstick{$\ket{0}$}& \qwbundle
+%{} & \qw & \qw & \gate[3]{\begin{turn}{90} 
+%$QPE$
+%\end{turn}} & \qw &  \gate[3]{\begin{turn}{90} 
+%$QPE\dagger$
+%\end{turn}}& \qw & \qw & \qw & \qw \\
+%\lstick{$\ket{0}$}& \qwbundle
+%{} & \gate[2]{\begin{turn}{90} 
+%Load \ket{b}
+%\end{turn}} & \qw & \qw & \qw & \qw & \qw & \gate[2]{\begin{turn}{90} 
+%$F(x)$
+%\end{turn}} & \qw & \qw \\
+%\lstick{$\ket{0}$}& \qwbundle
+%{} & \qw & \qw & \qw & \qw & \qw & \qw & \qw &  \meter{}\slice{step 6} & \qw 
+%\end{quantikz}
+%\caption{This is an image from a text that uses color to teach music.}
+%\label{fig}
+%\end{figure}
+
+
+
+
+\section{Experimental Results and Discussion} 
+
+%of \texorpdfstring{{\boldmath$Z=X \cup Y$}}{Z = X union Y}}
+\subsection{Experimental Results on IBM Quantum with Qiskit} 
+We used IBM Q and Qiskit for experiments and programming purposes. MBVP and the Inverse Two-Phase Stefan Problem were solved with fidelities 0.99 and 1 respectively. We refer reader to \cite{SarFirst} for details of experiments. 
+Proposed method in combination with Fa Di Bruno's Formula and Quantum HHL algorithm can be used for exact solutions for direct/inverse Stefan type problems and MBVPs in general for arbitrary $\nu$ in \ref{geneq} and arbitrary $\alpha(t)$.
+Special functions method in combination with HHL algorithm or its Continuous Variable version \cite{Arrazola_2019} can be also used for approximate solutions of boundary value problems with fixed boundaries as well.       
+
+\section{Conclusion}
+\label{sec:conclusions}
+
+Special functions method and HHL quantum algorithm was used for exact solutions of one and two moving boundary value problems. We used IBM Q for experiments \cite{SarFirst} and solved MBVP with discontinuous coefficients. $A_0,A_1, B_0,B_1,C_0, C_1$ coefficients of solution functions in \ref{mod1_sol1},\ref{mod1_sol2} and \ref{mod2_sol1},\ref{mod2_sol2} were found with fidelities 0.99 and 1 respectively.
+
+%\appendix  
+%\section{An example appendix} 
+%\lipsum[71]
+
+%\begin{lemma}
+%Test Lemma.
+%\end{lemma}
+
+%\section*{Acknowledgments}
+%the assistance of volunteers in putting
+%together this example manuscript and supplement.
+
+
+
+\bibliography{mybibfile}
+
+\end{document}
